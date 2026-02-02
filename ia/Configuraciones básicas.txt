@@ -1,0 +1,21 @@
+Configuraciones básicas
+
+idioma del código:Ingles
+versión Spring: 3.5.X
+versión java : 17
+
+
+configura el proyecto para empezar un proyecto de spirng boot que trabaje en la versión 3.5.X y que especifique en el pom que se usara la versión 17 de java. 
+
+El proyecto será un api rest sencilla en la que solo se quiere las dependencias de api rest con JPA repository que sean imprescindibles para el buen funcionamiento de la aplicación, así como las de seguridad , los test y lombok. Por 
+otra parte necesito alguna dependencia para la documentación del código. Fuera aparte de los mencionados no quiero ninguno adicional que afecte o modifique el uso de las dependencias anteriores.
+
+quiero que me generes las carpetas de la aplicación para que se vea una diferencia clara entre controlador, servicio , repositorio, entity y DTO.
+
+Ten en cuenta que el proyecto esta previamenete creado por lo que quiero que modifiques solo lo necesario para que funcione con las modificaciones que declaro en este fichero. 
+
+Se busca una instalacion lo mas limpia posible por lo que borra cualquier dependencia adicional que sirva para el proyecto.
+
+  
+
+ 
