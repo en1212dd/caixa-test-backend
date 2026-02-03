@@ -1,0 +1,60 @@
+base de datos: mariadb:latest
+entorno:docker 
+idioma del codigo:ingles
+
+
+Generame un init sql para la base de datos teniendo en cuenta el siguiente esquema :
+
+@startuml
+class Cliente {
+  +id: Long
+  +nombreCompleto: String
+  +fechaCreacion: LocalDateTime
+  +fechaModificacion: LocalDateTime
+  --
+  +documento: DocumentoIdentificativo
+}
+
+class SolicitudPrestamo {
+  +id: Long
+  +importe: BigDecimal
+  +estado: EstadoSolicitud
+  +fechaCreacion: LocalDateTime
+  +fechaModificacion: LocalDateTime
+}
+
+class DocumentoIdentificativo {
+  +tipo: TipoDocumento
+  +numero: String
+}
+
+class Divisa {
+  +id: Long
+  +codigo: String
+  +descripcion: String
+}
+
+enum TipoDocumento {
+  DNI
+  NIE
+  PASSPORT
+}
+
+enum EstadoSolicitud {
+  PENDIENTE
+  APROBADA
+  RECHAZADA
+  CANCELADA
+}
+
+Cliente "1" --> "N" SolicitudPrestamo : realiza
+Cliente *-- DocumentoIdentificativo
+SolicitudPrestamo "N" --> "1" Divisa : usa
+SolicitudPrestamo --> EstadoSolicitud
+DocumentoIdentificativo --> TipoDocumento
+@enduml
+
+quiero, por tanto, que cada enum pertenzca a su tabla correspondiente con un CONSTRAIN.
+
+
+Una vez creado, implementa inserts con datos alazar para las tablas de usuario, con distintos documento identificativo. 
