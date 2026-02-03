@@ -1,0 +1,24 @@
+# Multi-stage build for CaixaTest Spring Boot application (Java 17)
+
+# Build stage
+FROM maven:3.9.6-eclipse-temurin-17 AS build
+WORKDIR /workspace
+
+# Copy only necessary files to leverage Docker cache
+COPY pom.xml mvnw ./
+COPY .mvn .mvn
+COPY src ./src
+
+# Build the application (skip tests for faster build)
+# And comprobate wich type of arfhive is generated (jar/war) without showing logs
+RUN mvn -B package -DskipTests \
+    && bash -lc 
+    'if compgen -G "target/*.jar" > /dev/null; then cp target/*.jar app.jar; elif compgen -G "target/*.war" > /dev/null; then cp target/*.war app.jar; else echo "No jar/war found" && exit 1; fi'
+
+# Runtime stage
+FROM eclipse-temurin:17-jre
+WORKDIR /app
+COPY --from=build /workspace/app.jar /app/app.jar
+
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]

@@ -7,7 +7,7 @@ COPY init.sql /docker-entrypoint-initdb.d/
 RUN chmod 644 /docker-entrypoint-initdb.d/init.sql
 
 # Variables de entorno por defecto (se pueden sobreescribir)
-ENV MYSQL_ROOT_PASSWORD=default_root_password
-ENV MYSQL_DATABASE=mi_basedatos
-ENV MYSQL_USER=mi_usuario
-ENV MYSQL_PASSWORD=mi_contraseña
+ENV MYSQL_ROOT_PASSWORD=admin
+ENV MYSQL_DATABASE=loan_db
+ENV MYSQL_USER=admin
+ENV MYSQL_PASSWORD=admin
