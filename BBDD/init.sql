@@ -218,12 +218,6 @@ GROUP BY ls.code, c.code;
 SELECT '=== CLIENT DETAILS (First 5) ===' AS section;
 SELECT * FROM v_client_detail LIMIT 5;
 
-SELECT '=== LOAN REQUESTS (First 5) ===' AS section;
-SELECT * FROM v_loan_request_detail LIMIT 5;
-
-SELECT '=== LOAN SUMMARY ===' AS section;
-SELECT * FROM v_loan_summary;
-
 SELECT '=== DATABASE INITIALIZED SUCCESSFULLY ===' AS message;
 SELECT 
     (SELECT COUNT(*) FROM client) AS total_clients,
