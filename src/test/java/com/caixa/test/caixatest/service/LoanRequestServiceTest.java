@@ -4,12 +4,15 @@ import com.caixa.test.caixatest.dto.CreateLoanRequestDTO;
 import com.caixa.test.caixatest.dto.LoanRequestDTO;
 import com.caixa.test.caixatest.entities.Client;
 import com.caixa.test.caixatest.entities.Currency;
+import com.caixa.test.caixatest.entities.DocumentType;
 import com.caixa.test.caixatest.entities.LoanRequest;
 import com.caixa.test.caixatest.enums.LoadStatus;
 import com.caixa.test.caixatest.repository.ClientRepository;
 import com.caixa.test.caixatest.repository.CurrencyRepository;
 import com.caixa.test.caixatest.repository.LoanRequestDetailRepository;
 import com.caixa.test.caixatest.repository.LoanRequestRepository;
+import com.caixa.test.caixatest.testutil.TestDataFactory;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -59,29 +62,9 @@ class LoanRequestServiceTest {
 
     @BeforeEach
     void setUp() {
-        sampleClient = Client.builder()
-                .id(1L)
-                .fullName("John Smith")
-                .documentNumber("12345678A")
-                .build();
-        // ensure document type is present because service mapping reads
-        // documentType.code
-        sampleClient.setDocumentType(
-                com.caixa.test.caixatest.entities.DocumentType.builder().id(1).code("DNI").description("DNI").build());
-
-        sampleCurrency = Currency.builder()
-                .id(1L)
-                .code("EUR")
-                .description("Euro")
-                .build();
-
-        sampleLoan = LoanRequest.builder()
-                .id(10L)
-                .client(sampleClient)
-                .amount(BigDecimal.valueOf(1000.00))
-                .currency(sampleCurrency)
-                .loanStatus(LoadStatus.PENDING)
-                .build();
+        sampleClient = TestDataFactory.client();
+        sampleCurrency = TestDataFactory.currency();
+        sampleLoan = TestDataFactory.loanRequest();
     }
 
     /**

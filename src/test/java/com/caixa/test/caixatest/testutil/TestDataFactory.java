@@ -5,11 +5,14 @@ import com.caixa.test.caixatest.dto.ChangeLoanStatusDTO;
 import com.caixa.test.caixatest.dto.CreateLoanRequestDTO;
 import com.caixa.test.caixatest.dto.CurrencyDTO;
 import com.caixa.test.caixatest.dto.LoanRequestDTO;
+import com.caixa.test.caixatest.entities.Client;
+import com.caixa.test.caixatest.entities.Currency;
+import com.caixa.test.caixatest.entities.DocumentType;
+import com.caixa.test.caixatest.entities.LoanRequest;
 import com.caixa.test.caixatest.entities.details.ClientDetail;
 import com.caixa.test.caixatest.entities.details.LoanRequestDetail;
 import com.caixa.test.caixatest.enums.LoadStatus;
 
-import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -21,40 +24,63 @@ public final class TestDataFactory {
     }
 
     public static ClientDetail clientDetail() {
-        try {
-            ClientDetail cd = new ClientDetail();
-            setField(cd, "id", 1L);
-            setField(cd, "fullName", "John Smith");
-            setField(cd, "documentType", "DNI");
-            setField(cd, "documentNumber", "12345678A");
-            setField(cd, "createdAt", LocalDateTime.now());
-            setField(cd, "updatedAt", LocalDateTime.now());
-            return cd;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        return ClientDetail.builder()
+                .id(1L)
+                .fullName("John Smith")
+                .documentType("DNI")
+                .documentNumber("12345678A")
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .build();
     }
 
     public static ClientDetailDTO clientDetailDto() {
         return new ClientDetailDTO("John Smith", "12345678A", "DNI");
     }
 
+    public static Client client() {
+        var sampleClient = Client.builder()
+                .id(1L)
+                .fullName("John Smith")
+                .documentNumber("12345678A")
+                .build();
+        // ensure document type is present because service mapping reads
+        // documentType.code
+        sampleClient.setDocumentType(
+                DocumentType.builder().id(1).code("DNI").description("DNI").build());
+        return sampleClient;
+    }
+
+    public static Currency currency() {
+        return Currency.builder()
+                .id(1L)
+                .code("EUR")
+                .description("Euro")
+                .build();
+    }
+
+    public static LoanRequest loanRequest() {
+        return LoanRequest.builder()
+                .id(10L)
+                .client(client())
+                .amount(BigDecimal.valueOf(1000.00))
+                .currency(currency())
+                .loanStatus(LoadStatus.PENDING)
+                .build();
+    }
+
     public static LoanRequestDetail loanRequestDetail() {
-        try {
-            LoanRequestDetail ld = new LoanRequestDetail();
-            setField(ld, "id", 10L);
-            setField(ld, "amount", BigDecimal.valueOf(5000));
-            setField(ld, "currency", "EUR");
-            setField(ld, "status", "PENDING");
-            setField(ld, "clientName", "John Smith");
-            setField(ld, "clientDocumentType", "DNI");
-            setField(ld, "documentNumber", "12345678A");
-            setField(ld, "createdAt", LocalDateTime.now());
-            setField(ld, "updatedAt", LocalDateTime.now());
-            return ld;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        return LoanRequestDetail.builder()
+                .id(10L)
+                .amount(BigDecimal.valueOf(5000))
+                .currency("EUR")
+                .status("PENDING")
+                .clientName("John Smith")
+                .clientDocumentType("DNI")
+                .documentNumber("12345678A")
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .build();
     }
 
     public static LoanRequestDTO loanRequestDto() {
@@ -69,9 +95,4 @@ public final class TestDataFactory {
         return new ChangeLoanStatusDTO(status);
     }
 
-    private static void setField(Object target, String name, Object value) throws Exception {
-        Field f = target.getClass().getDeclaredField(name);
-        f.setAccessible(true);
-        f.set(target, value);
-    }
 }
