@@ -35,6 +35,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/private/**").hasRole("ADMIN")
                 .requestMatchers("/api/clients/details", "/api/loan-requests/details").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET, "/api/loan-requests/*").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.POST, "/api/loan-requests", "/api/loan-requests/**").hasAnyRole("USER", "ADMIN")
                 .anyRequest().permitAll())
             .httpBasic(Customizer.withDefaults());

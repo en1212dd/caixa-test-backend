@@ -13,12 +13,15 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -53,6 +56,22 @@ public class LoanRequestController {
     @GetMapping("/details")
     public List<LoanRequestDTO> getAllLoanRequestDtos() {
         return service.getAllLoanRequestDtos();
+    }
+
+    @Operation(summary = "Get a loan request by id (admin only)", security = @SecurityRequirement(name = "basicAuth"))
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "404", description = "Not Found")
+    })
+
+    @GetMapping("/{id}")
+    public ResponseEntity<LoanRequestDTO> getLoanById(
+            @PathVariable Long id) {
+        return service.getLoanById(id)
+                .map(ResponseEntity::ok)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Loan not found"));
     }
 
     @Operation(summary = "Create a loan request", security = @SecurityRequirement(name = "basicAuth"))

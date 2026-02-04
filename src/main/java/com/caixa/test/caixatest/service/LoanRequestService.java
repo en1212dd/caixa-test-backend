@@ -44,12 +44,9 @@ public class LoanRequestService {
 
     @Transactional(readOnly = true)
     public List<LoanRequestDTO> getAllLoanRequestDtos() {
-        return requestRepository.findAll().stream().map(r -> {
-            var clientDto = new ClientDetailDTO(r.getClient().getFullName(), r.getClient().getDocumentNumber(),
-                    r.getClient().getDocumentType().getCode());
-            var currencyDto = new CurrencyDTO(r.getCurrency().getCode(), r.getCurrency().getDescription());
-            return new LoanRequestDTO(r.getId(), clientDto, currencyDto, r.getLoanStatus().getCode());
-        }).toList();
+        return requestRepository.findAll().stream()
+                .map(this::toDto)
+                .toList();
     }
 
     @Transactional
@@ -71,7 +68,7 @@ public class LoanRequestService {
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Currency not found"));
 
-        // create loan
+        // create loan (status PENDING)
         var loan = new LoanRequest();
         loan.setClient(client);
         loan.setAmount(request.amount());
@@ -80,10 +77,19 @@ public class LoanRequestService {
 
         var saved = requestRepository.save(loan);
 
-        var clientDto = new ClientDetailDTO(saved.getClient().getFullName(), saved.getClient().getDocumentNumber(),
-                saved.getClient().getDocumentType().getCode());
-        var currencyDto = new CurrencyDTO(saved.getCurrency().getCode(), saved.getCurrency().getDescription());
-        var s = saved.getLoanStatus() != null ? saved.getLoanStatus().getCode() : null;
-        return new LoanRequestDTO(saved.getId(), clientDto, currencyDto, s);
+        return toDto(saved);
+    }
+
+    @Transactional(readOnly = true)
+    public java.util.Optional<LoanRequestDTO> getLoanById(Long id) {
+        return requestRepository.findById(id).map(this::toDto);
+    }
+
+    private LoanRequestDTO toDto(LoanRequest r) {
+        var clientDto = new ClientDetailDTO(r.getClient().getFullName(), r.getClient().getDocumentNumber(),
+                r.getClient().getDocumentType().getCode());
+        var currencyDto = new CurrencyDTO(r.getCurrency().getCode(), r.getCurrency().getDescription());
+        var status = r.getLoanStatus() != null ? r.getLoanStatus().getCode() : null;
+        return new LoanRequestDTO(r.getId(), clientDto, currencyDto, status);
     }
 }
