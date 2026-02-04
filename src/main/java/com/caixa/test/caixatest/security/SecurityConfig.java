@@ -33,15 +33,17 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
-            .csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/private/**").hasRole("ADMIN")
-                .requestMatchers("/api/clients/details", "/api/loan-requests/details").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.GET, "/api/loan-requests/*").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.POST, "/api/loan-requests", "/api/loan-requests/**").hasAnyRole("USER", "ADMIN")
-                .requestMatchers(HttpMethod.PATCH, "/api/loan-requests/*/status").hasRole("ADMIN")
-                .anyRequest().permitAll())
-            .httpBasic(Customizer.withDefaults());
+                // csrf disabled for simplicity in this example
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/private/**").hasRole("ADMIN")
+                        .requestMatchers("/api/clients/details", "/api/loan-requests/details")
+                        .hasAnyRole("ADMIN", "USER")
+                        .requestMatchers(HttpMethod.POST, "/api/loan-requests", "/api/loan-requests/**")
+                        .hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.PATCH, "/api/loan-requests/*/status").hasAnyRole("USER", "ADMIN")
+                        .anyRequest().permitAll())
+                .httpBasic(Customizer.withDefaults());
 
         return http.build();
     }

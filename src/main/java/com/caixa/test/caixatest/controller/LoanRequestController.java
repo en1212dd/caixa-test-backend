@@ -36,80 +36,80 @@ import java.util.List;
 @Tag(name = "Loan Requests", description = "Operations related to loan requests")
 public class LoanRequestController {
 
-    private final LoanRequestService service;
+        private final LoanRequestService service;
 
-    public LoanRequestController(LoanRequestService service) {
-        this.service = service;
-    }
+        public LoanRequestController(LoanRequestService service) {
+                this.service = service;
+        }
 
-    @Operation(summary = "Get detailed loan requests (admin only)", security = @SecurityRequirement(name = "basicAuth"))
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "OK"),
-            @ApiResponse(responseCode = "401", description = "Unauthorized")
-    })
-    @GetMapping("/private/details")
-    public List<LoanRequestDetail> getAllLoanRequestDetails() {
-        return service.getAllLoanRequestDetails();
-    }
+        @Operation(summary = "Get detailed loan requests (admin only)", security = @SecurityRequirement(name = "basicAuth"))
+        @ApiResponses({
+                        @ApiResponse(responseCode = "200", description = "OK"),
+                        @ApiResponse(responseCode = "401", description = "Unauthorized")
+        })
+        @GetMapping("/private/details")
+        public List<LoanRequestDetail> getAllLoanRequestDetails() {
+                return service.getAllLoanRequestDetails();
+        }
 
-    @Operation(summary = "Get loan request DTOs (admin only)", security = @SecurityRequirement(name = "basicAuth"))
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "OK"),
-            @ApiResponse(responseCode = "401", description = "Unauthorized")
-    })
-    @GetMapping("/details")
-    public List<LoanRequestDTO> getAllLoanRequestDtos() {
-        return service.getAllLoanRequestDtos();
-    }
+        @Operation(summary = "Get loan request DTOs ", security = @SecurityRequirement(name = "basicAuth"))
+        @ApiResponses({
+                        @ApiResponse(responseCode = "200", description = "OK"),
+                        @ApiResponse(responseCode = "401", description = "Unauthorized")
+        })
+        @GetMapping("/details")
+        public List<LoanRequestDTO> getAllLoanRequestDtos() {
+                return service.getAllLoanRequestDtos();
+        }
 
-    @Operation(summary = "Get a loan request by id (admin only)", security = @SecurityRequirement(name = "basicAuth"))
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "OK"),
-            @ApiResponse(responseCode = "401", description = "Unauthorized"),
-            @ApiResponse(responseCode = "404", description = "Not Found")
-    })
+        @Operation(summary = "Get a loan request by id ", security = @SecurityRequirement(name = "basicAuth"))
+        @ApiResponses({
+                        @ApiResponse(responseCode = "200", description = "OK"),
+                        @ApiResponse(responseCode = "401", description = "Unauthorized"),
+                        @ApiResponse(responseCode = "404", description = "Not Found")
+        })
 
-    @GetMapping("/{id}")
-    public ResponseEntity<LoanRequestDTO> getLoanById(
-            @PathVariable Long id) {
-        return service.getLoanById(id)
-                .map(ResponseEntity::ok)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Loan not found"));
-    }
+        @GetMapping("/{id}")
+        public ResponseEntity<LoanRequestDTO> getLoanById(
+                        @PathVariable Long id) {
+                return service.getLoanById(id)
+                                .map(ResponseEntity::ok)
+                                .orElseThrow(() -> new ResponseStatusException(
+                                                HttpStatus.NOT_FOUND, "Loan not found"));
+        }
 
-    @Operation(summary = "Create a loan request", security = @SecurityRequirement(name = "basicAuth"))
-    @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Created"),
-            @ApiResponse(responseCode = "400", description = "Bad Request"),
-            @ApiResponse(responseCode = "401", description = "Unauthorized"),
-            @ApiResponse(responseCode = "404", description = "Not Found")
-    })
-    @PostMapping("/create")
-    public ResponseEntity<LoanRequestDTO> createLoan(
-            @Valid @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Create loan request payload", required = true) @RequestBody CreateLoanRequestDTO request,
-            UriComponentsBuilder uriBuilder) {
-        var created = service.createLoan(request);
-        var location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(created.getId())
-                .toUri();
-        return ResponseEntity.created(location).body(created);
-    }
+        @Operation(summary = "Create a loan request", security = @SecurityRequirement(name = "basicAuth"))
+        @ApiResponses({
+                        @ApiResponse(responseCode = "201", description = "Created"),
+                        @ApiResponse(responseCode = "400", description = "Bad Request"),
+                        @ApiResponse(responseCode = "401", description = "Unauthorized"),
+                        @ApiResponse(responseCode = "404", description = "Not Found")
+        })
+        @PostMapping("/create")
+        public ResponseEntity<LoanRequestDTO> createLoan(
+                        @Valid @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Create loan request payload", required = true) @RequestBody CreateLoanRequestDTO request,
+                        UriComponentsBuilder uriBuilder) {
+                var created = service.createLoan(request);
+                var location = ServletUriComponentsBuilder
+                                .fromCurrentRequest()
+                                .path("/{id}")
+                                .buildAndExpand(created.getId())
+                                .toUri();
+                return ResponseEntity.created(location).body(created);
+        }
 
-    @PatchMapping("/{id}/status")
-    @PreAuthorize("hasRole('ADMIN')")
-    @Operation(summary = "Change the status of a loan request (admin only)", security = @SecurityRequirement(name = "basicAuth"))
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Updated"),
-            @ApiResponse(responseCode = "400", description = "Invalid transition"),
-            @ApiResponse(responseCode = "404", description = "Not Found"),
-            @ApiResponse(responseCode = "401", description = "Unauthorized")
-    })
-    public ResponseEntity<LoanRequestDTO> changeStatus(@PathVariable Long id,
-            @Valid @RequestBody ChangeLoanStatusDTO body) {
-        var updated = service.changeStatus(id, body.status());
-        return ResponseEntity.ok(updated);
-    }
+        @PatchMapping("/{id}/status")
+        @PreAuthorize("hasRole('ADMIN')")
+        @Operation(summary = "Change the status of a loan request ", security = @SecurityRequirement(name = "basicAuth"))
+        @ApiResponses({
+                        @ApiResponse(responseCode = "200", description = "Updated"),
+                        @ApiResponse(responseCode = "400", description = "Invalid transition"),
+                        @ApiResponse(responseCode = "404", description = "Not Found"),
+                        @ApiResponse(responseCode = "401", description = "Unauthorized")
+        })
+        public ResponseEntity<LoanRequestDTO> changeStatus(@PathVariable Long id,
+                        @Valid @RequestBody ChangeLoanStatusDTO body) {
+                var updated = service.changeStatus(id, body.status());
+                return ResponseEntity.ok(updated);
+        }
 }
