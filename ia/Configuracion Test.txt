@@ -1,0 +1,13 @@
+Framework: Spring boot 3.5.9
+idioma del codigo: ingles
+version de java : 17
+libreria de test:spring-boot-starter-test 
+
+Generame test unitarios por servicio para la aplicacion, teniendo en cuenta las distintas entidades, validaciones asi como el fichero de configuracion inicial init.sql en donde se ve al configuracion de la base de datos. 
+Ten en cuenta lo siguiente:
+
+-Genera con builder distintas entidades como sea pertinente para las pruebas al principio de cada clase de test
+- Utiliza @InjectMock por servcio y  @Mock por repositorio 
+-Procura hacer una calse por servicio y por cada metodo un test que verifique el funcionamiento correcto
+- Quiero que me documentes cada uno de los test para ver con claridad su funcionamiento antes de la ejecucion
+-Procura no añadir ninguna dependencia adicional para la elaboracion de los test
