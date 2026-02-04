@@ -12,17 +12,11 @@ CREATE TABLE IF NOT EXISTS document_type (
     description VARCHAR(100) NOT NULL
 );
 
--- Table: loan_status (Enum)
-CREATE TABLE IF NOT EXISTS loan_status (
-    id TINYINT UNSIGNED NOT NULL PRIMARY KEY,
-    code VARCHAR(20) NOT NULL UNIQUE,
-    description VARCHAR(100) NOT NULL
-);
 
 -- Table: currency
 CREATE TABLE IF NOT EXISTS currency (
     id BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    code VARCHAR(10) NOT NULL UNIQUE,
+    code VARCHAR(3) NOT NULL UNIQUE,
     description VARCHAR(100) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -50,7 +44,7 @@ CREATE TABLE IF NOT EXISTS loan_request (
     client_id BIGINT NOT NULL,
     amount DECIMAL(15,2) NOT NULL CHECK (amount > 0),
     currency_id BIGINT NOT NULL,
-    loan_status_id TINYINT UNSIGNED NOT NULL DEFAULT 1,
+    loan_status VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     CONSTRAINT fk_loan_request_client 
@@ -63,11 +57,8 @@ CREATE TABLE IF NOT EXISTS loan_request (
         REFERENCES currency(id)
         ON DELETE RESTRICT
         ON UPDATE CASCADE,
-    CONSTRAINT fk_loan_request_status 
-        FOREIGN KEY (loan_status_id) 
-        REFERENCES loan_status(id)
-        ON DELETE RESTRICT
-        ON UPDATE CASCADE
+    CONSTRAINT chk_loan_status 
+        CHECK (loan_status IN ('PENDING', 'APPROVED', 'REJECTED', 'CANCELLED'))
 );
 
 -- Insert enum values for document_type
@@ -75,13 +66,6 @@ INSERT INTO document_type (id, code, description) VALUES
 (1, 'DNI', 'National Identity Document'),
 (2, 'NIE', 'Foreigner Identification Number'),
 (3, 'PASSPORT', 'Passport');
-
--- Insert enum values for loan_status
-INSERT INTO loan_status (id, code, description) VALUES
-(1, 'PENDING', 'Pending review'),
-(2, 'APPROVED', 'Approved'),
-(3, 'REJECTED', 'Rejected'),
-(4, 'CANCELLED', 'Cancelled');
 
 -- Insert some default currencies
 INSERT INTO currency (code, description) VALUES
@@ -187,7 +171,7 @@ SELECT
     lr.id,
     lr.amount,
     c.code AS currency,
-    ls.code AS status,
+    lr.loan_status AS status,
     cl.full_name AS client_name,
     dt.code AS client_document_type,
     cl.document_number,
@@ -196,7 +180,6 @@ SELECT
 FROM loan_request lr
 JOIN client cl ON lr.client_id = cl.id
 JOIN currency c ON lr.currency_id = c.id
-JOIN loan_status ls ON lr.loan_status_id = ls.id
 JOIN document_type dt ON cl.document_type_id = dt.id;
 /*
 Vista inecesaria para pruebas de resumen creadas por la IA
