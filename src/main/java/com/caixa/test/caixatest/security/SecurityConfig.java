@@ -2,6 +2,7 @@ package com.caixa.test.caixatest.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -11,6 +12,7 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
+@EnableMethodSecurity
 public class SecurityConfig {
     @Bean
     public UserDetailsService userDetailsService() {
@@ -37,6 +39,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/clients/details", "/api/loan-requests/details").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.GET, "/api/loan-requests/*").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.POST, "/api/loan-requests", "/api/loan-requests/**").hasAnyRole("USER", "ADMIN")
+                .requestMatchers(HttpMethod.PATCH, "/api/loan-requests/*/status").hasRole("ADMIN")
                 .anyRequest().permitAll())
             .httpBasic(Customizer.withDefaults());
 

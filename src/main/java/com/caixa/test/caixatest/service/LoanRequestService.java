@@ -85,6 +85,29 @@ public class LoanRequestService {
         return requestRepository.findById(id).map(this::toDto);
     }
 
+    @Transactional
+    public LoanRequestDTO changeStatus(Long id, com.caixa.test.caixatest.enums.LoadStatus newStatus) {
+        var loan = requestRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Loan not found"));
+        var current = loan.getLoanStatus();
+
+        // Allowed transitions
+        var allowed = switch (current) {
+            case PENDING -> java.util.Set.of(LoadStatus.APPROVED, LoadStatus.REJECTED);
+            case APPROVED -> java.util.Set.of(LoadStatus.CANCELLED);
+            default -> java.util.Set.of();
+        };
+
+        if (!allowed.contains(newStatus)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Invalid status transition: " + current + " -> " + newStatus);
+        }
+
+        loan.setLoanStatus(newStatus);
+        var saved = requestRepository.save(loan);
+        return toDto(saved);
+    }
+
     private LoanRequestDTO toDto(LoanRequest r) {
         var clientDto = new ClientDetailDTO(r.getClient().getFullName(), r.getClient().getDocumentNumber(),
                 r.getClient().getDocumentType().getCode());
