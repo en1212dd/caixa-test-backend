@@ -1,10 +1,9 @@
 package com.caixa.test.caixatest.repository;
 
+import com.caixa.test.caixatest.entities.LoanRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.caixa.test.caixatest.entities.details.ClientDetail;
-
 @Repository
-public interface ClientDetailRepository extends JpaRepository<ClientDetail, Long> {
+public interface LoanRequestRepository extends JpaRepository<LoanRequest, Long> {
 }

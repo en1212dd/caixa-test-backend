@@ -1,4 +1,4 @@
-package com.caixa.test.caixatest.entities;
+package com.caixa.test.caixatest.entities.details;
 
 import org.hibernate.annotations.Immutable;
 
@@ -8,21 +8,32 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "v_client_detail")
+@Table(name = "v_loan_request_detail")
 @Immutable
 @Getter
-public class ClientDetail {
+public class LoanRequestDetail {
+
     @Id
     private Long id;
 
-    @Column(name = "full_name")
-    private String fullName;
+    @Column(name = "amount")
+    private BigDecimal amount;
 
-    @Column(name = "document_type")
-    private String documentType;
+    @Column(name = "currency")
+    private String currency;
+
+    @Column(name = "status")
+    private String status;
+
+    @Column(name = "client_name")
+    private String clientName;
+
+    @Column(name = "client_document_type")
+    private String clientDocumentType;
 
     @Column(name = "document_number")
     private String documentNumber;
@@ -32,5 +43,4 @@ public class ClientDetail {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-
 }

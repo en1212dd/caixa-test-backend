@@ -6,8 +6,12 @@ import java.time.LocalDateTime;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.caixa.test.caixatest.enums.LoadStatus;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -43,9 +47,9 @@ public class LoanRequest {
     @JoinColumn(name = "currency_id", nullable = false)
     private Currency currency;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "loan_status_id", nullable = false)
-    private LoanStatus loanStatus;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "loan_status", nullable = false)
+    private LoadStatus loanStatus;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
