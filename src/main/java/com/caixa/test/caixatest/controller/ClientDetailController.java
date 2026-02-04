@@ -35,7 +35,7 @@ public class ClientDetailController {
         return service.getAllClientDetails();
     }
 
-    @Operation(summary = "Get client DTOs (admin only)", security = @SecurityRequirement(name = "basicAuth"))
+    @Operation(summary = "Get client DTOs", security = @SecurityRequirement(name = "basicAuth"))
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "401", description = "Unauthorized")
